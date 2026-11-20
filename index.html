@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Bengaluru Metro Station Viewer</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Raleway:wght@600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="lib/ol.css">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+<div id="map" aria-label="Map of Bengaluru metro stations"></div>
+
+<aside class="panel" id="panel">
+  <header class="panel-head">
+    <div>
+      <h1><span id="appTitle">Bengaluru Metro Station Viewer</span></h1>
+      <div class="sub" id="appSub"></div>
+    </div>
+    <button class="icon-btn" id="panelToggle" aria-label="Hide or show the panel" title="Hide or show the panel">&#8211;</button>
+  </header>
+
+  <div class="panel-body">
+    <div class="search">
+      <input type="search" id="search" list="stationList" placeholder="Find a station" aria-label="Find a station">
+      <datalist id="stationList"></datalist>
+    </div>
+    <div class="status" id="status" role="status"></div>
+
+    <h2 class="layers-title">Layers</h2>
+
+    <div class="layer">
+      <div class="layer-row"><span class="layer-name">Base map</span></div>
+      <div class="seg" id="baseSeg">
+        <button data-v="osm" class="on">Streets</button><button data-v="sat">Satellite</button><button data-v="none">None</button>
+      </div>
+    </div>
+
+    <div class="layer">
+      <label class="layer-row"><input type="checkbox" id="lyrStations" checked><span class="layer-name">Metro stations</span></label>
+      <div class="legend clickable" id="catLegend"></div>
+      <div class="hint">Click a type to hide or show it. Fill = station type; ring = metro line; size = weekday ridership. Hollow marker = provisional type (land-use data incomplete).</div>
+    </div>
+
+    <div class="layer">
+      <label class="layer-row"><input type="checkbox" id="lyrLines" checked><span class="layer-name">Metro corridors</span></label>
+      <div class="legend clickable" id="lineLegend"></div>
+    </div>
+
+    <div class="layer">
+      <label class="layer-row"><input type="checkbox" id="lyrWalk" checked><span class="layer-name">800 m walking catchments</span><span class="sw poly" style="background:rgba(42,202,217,0.35);border-color:#13808C;margin-left:auto"></span></label>
+      <div class="hint">Area within an 800 m walk of the station entrances along the street network.</div>
+    </div>
+
+    <div class="layer">
+      <label class="layer-row"><input type="checkbox" id="lyrCircles"><span class="layer-name">800 m circles</span><span class="sw" style="background:#fff;border-style:dashed;margin-left:auto"></span></label>
+      <div class="hint">Straight-line distance, for comparison with the walking catchment.</div>
+    </div>
+
+    <div class="layer">
+      <label class="layer-row"><input type="checkbox" id="lyrLanduse"><span class="layer-name">Land use 2017 (KSRSAC)</span></label>
+      <div class="legend" id="luLegend" hidden></div>
+      <div class="hint">Mapped within 1.2 km of stations, inside the former BBMP area.</div>
+    </div>
+
+    <div class="layer">
+      <label class="layer-row"><input type="checkbox" id="lyrCorps" checked><span class="layer-name">GBA corporation boundaries</span></label>
+      <div class="legend" id="corpLegend"></div>
+    </div>
+
+    <div class="layer">
+      <div class="layer-row"><span class="layer-name">Master plan</span></div>
+      <select id="planSel" aria-label="Master plan image"><option value="">None</option></select>
+      <div class="slider"><span>Opacity</span><input type="range" id="planOpacity" min="0" max="1" step="0.05" value="0.7" aria-label="Master plan opacity"></div>
+      <div class="hint" id="planNote">Plans show planned land use, not what is on the ground.</div>
+    </div>
+
+    <button class="link about-link" id="aboutBtn">About, sources and cautions</button>
+  </div>
+</aside>
+
+<aside class="card" id="card" hidden aria-live="polite">
+  <button class="icon-btn card-close" id="cardClose" aria-label="Close">&#10005;</button>
+  <div id="cardBody"></div>
+</aside>
+
+<div class="modal" id="about" hidden>
+  <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
+    <button class="icon-btn card-close" id="aboutClose" aria-label="Close">&#10005;</button>
+    <h2 id="aboutTitle"><span>About this viewer</span></h2>
+    <p>A working map for choosing Namma Metro stations for footpath surveys. It shows what kind of place each station serves and how much of its surroundings people can actually reach on foot. It is not an official map.</p>
+    <h3>Station types</h3>
+    <p>Each station has one primary type, based on two sources of evidence: ridership (who uses the station, and when) and land use within its 800 m walking catchment. Interchanges and other features are listed as tags. Types marked provisional rest on OpenStreetMap sites, because the 2017 land-use map does not cover the station.</p>
+    <h3>Sources</h3>
+    <ul>
+      <li><b>Ridership:</b> BMRCL hourly station data released under RTI (OpenCity), September 2025. Figures are average daily entries plus exits, on weekdays (21 days, excluding the 5 September holiday) and weekend days (8 days). The Yellow Line had been open only a few weeks. The Pink Line (opened 13 November 2026) has no data yet.</li>
+      <li><b>Walking catchments:</b> ArcGIS Pro Service Area analysis, 800 m along OpenStreetMap streets and paths (Geofabrik, March 2026), from station entrances (BMRCL GTFS, unofficial). Motorways, flyovers and vehicle underpasses are excluded.</li>
+      <li><b>Land use:</b> KSRSAC urban land use 2017 (via OpenCity), within the former BBMP area. It has no mixed-use class, so mixed use is inferred.</li>
+      <li><b>Supporting evidence:</b> OpenStreetMap office and tech parks, hospitals, colleges and shops.</li>
+      <li><b>Lines and stations:</b> BMRCL GTFS (Vonter/bmrcl-gtfs, OpenStreetMap-based, ODbL). The Pink Line is drawn schematically. S.G. Palya is not mapped.</li>
+      <li><b>Corporations:</b> GBA five-corporation map, September 2025.</li>
+      <li><b>Master plans:</b> RMP 2015 via MapWarper; draft 2031 hosted by the Master Plan Viewer project.</li>
+      <li><b>Base maps:</b> &copy; OpenStreetMap contributors; imagery &copy; Esri.</li>
+    </ul>
+    <p class="muted">Prepared by Janaagraha, November 2026.</p>
+  </div>
+</div>
+
+<div id="coords" class="coords">Move the pointer over the map</div>
+
+<script src="lib/geotiff.js"></script>
+<script src="lib/ol.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>
