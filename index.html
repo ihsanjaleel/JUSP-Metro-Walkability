@@ -79,16 +79,6 @@
     </div>
 
     <div class="layer">
-      <label class="layer-row"><input type="checkbox" id="lyrWalk"><span class="layer-name">800 m walking catchments</span><span class="sw poly" style="background:rgba(42,202,217,0.35);border-color:#13808C;margin-left:auto"></span></label>
-      <div class="hint">Area within an 800 m walk, for comparison.</div>
-    </div>
-
-    <div class="layer">
-      <label class="layer-row"><input type="checkbox" id="lyrCircles"><span class="layer-name">800 m circles</span><span class="sw" style="background:#fff;border-style:dashed;margin-left:auto"></span></label>
-      <div class="hint">Straight-line distance, for comparison.</div>
-    </div>
-
-    <div class="layer">
       <label class="layer-row"><input type="checkbox" id="lyrLanduse"><span class="layer-name">Land use 2017 (KSRSAC)</span></label>
       <div class="legend" id="luLegend" hidden></div>
       <div class="hint">Mapped within 1.2 km of stations, inside the former BBMP area.</div>
@@ -126,7 +116,7 @@
     <h3>Sources</h3>
     <ul>
       <li><b>Ridership:</b> BMRCL hourly station data released under RTI (OpenCity), September 2025. Figures are average daily entries plus exits, on weekdays (21 days, excluding the 5 September holiday) and weekend days (8 days). The Yellow Line had been open only a few weeks. The Pink Line elevated section (opened 14 November 2026) has no data yet.</li>
-      <li><b>Walk areas:</b> ArcGIS Pro Service Area analysis, 500 m (and 800 m for comparison) along OpenStreetMap streets and paths (Geofabrik, March 2026), from station entrances (BMRCL GTFS, unofficial). Motorways, flyovers and vehicle underpasses are excluded. Pink Line catchments were recomputed the same way from corrected station points.</li>
+      <li><b>Walk areas:</b> ArcGIS Pro Service Area analysis, 500 m along OpenStreetMap streets and paths (Geofabrik, March 2026), from station entrances (BMRCL GTFS, unofficial). Motorways, flyovers and vehicle underpasses are excluded. Pink Line catchments were recomputed the same way from corrected station points.</li>
       <li><b>Road types:</b> OpenStreetMap road class: trunk and primary = arterial, secondary = sub-arterial, tertiary = collector. Footpath length counts both sides; a divided road drawn as two one-way lines counts one side per line.</li>
       <li><b>Bus stops:</b> BMTC timetable (Vonter/bmtc-gtfs, unofficial, November 2026). <b>Large sites:</b> OpenStreetMap.</li>
       <li><b>Tender S.U.R.E. roads:</b> Jana Urban Space portfolio; matched to OpenStreetMap by name. Cantonment Road and Planetarium Road could not be matched.</li>

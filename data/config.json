@@ -16,8 +16,6 @@
   "stations": "data/stations.csv",
   "lines": "data/metro_lines.geojson",
   "corporations": "data/corporations.geojson",
-  "walkCatchments": "data/walk_catchments_800m.geojson",
-  "circles": "data/circles_800m.geojson",
   "landuse": "data/landuse_2017.geojson",
   "walk500": "data/walk_catchments_500m.geojson",
   "mainRoads": "data/main_roads_500m.geojson",
@@ -43,21 +41,22 @@
  "landuse": {
   "field": "group",
   "colours": {
-   "Residential": "#F6E27F",
-   "Commercial": "#E45756",
-   "Industrial": "#B279A2",
-   "Educational": "#4C78A8",
-   "Religious": "#9C755F",
-   "Parks and recreation": "#54A24B",
-   "Vegetated open land": "#A7C957",
-   "Agriculture, forest and scrub": "#C8D5B9",
-   "Vacant land and layouts": "#E8E3D3",
-   "Water bodies": "#72B7E1",
-   "Railway and metro": "#7F7F7F",
-   "Transport terminals": "#BAB0AC",
-   "Utilities": "#D4A6C8",
-   "Other": "#D9D9D9"
-  }
+   "Residential": "#FFFF00",
+   "Commercial": "#0070FF",
+   "Industrial": "#A020F0",
+   "Educational": "#E60000",
+   "Religious": "#A80000",
+   "Utilities": "#732600",
+   "Parks and recreation": "#38A800",
+   "Vegetated open land": "#98E600",
+   "Agriculture, forest and scrub": "#D3FFBE",
+   "Water bodies": "#73DFFF",
+   "Railway and metro": "#4E4E4E",
+   "Transport terminals": "#9C9C9C",
+   "Vacant land and layouts": "#F5EBD7",
+   "Other": "#CCCCCC"
+  },
+  "note": "Colours follow the URDPFI land-use colour convention: residential yellow, commercial blue, industrial purple, public and semi-public red, recreation green, agriculture light green, transport black/grey."
  },
  "planImages": [
   {

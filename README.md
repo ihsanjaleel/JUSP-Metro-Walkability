@@ -25,12 +25,11 @@ Prepared by Janaagraha, November 2026.
 | Station entrances | `data/entrances.geojson` |
 | 5 km and 12 km from Majestic | `data/area_rings.geojson` |
 | Completed Tender S.U.R.E. roads | `data/tender_sure_roads.geojson` |
-| 800 m walk areas and circles, for comparison | `data/walk_catchments_800m.geojson`, `data/circles_800m.geojson` |
 | Land use 2017 (KSRSAC), loaded only when switched on | `data/landuse_2017.geojson` |
 | Corporation boundaries | `data/corporations.geojson` |
 | Master plan 2015 or draft 2031 | links in `data/config.json` |
 
-Clicking a station shows ridership, why it was picked (survey stations), footpath and road length within 500 m, extensions, and the 800 m figures for comparison.
+Clicking a station shows ridership, why it was picked (survey stations), footpath and road length within 500 m and extensions.
 
 ## Updating the data
 

@@ -310,18 +310,7 @@
         Object.keys(places).map(function (p) { return esc(p) + ' (' + Math.round(places[p]) + ' m)'; }).join(', ') + '.</p>';
       h += '<p class="small">ArcGIS Pro, 500 m walk from the entrances. Arterial, sub-arterial and collector roads from OpenStreetMap; local streets not included.</p>';
     }
-    if (r.walk_share_of_circle_pct) {
-      h += '<h3>800 m walking access (for comparison)</h3>';
-      h += '<div class="grid2"><div><div class="lab">Area within 800 m walk</div><div class="big">' + (+r.walk_area_km2).toFixed(2) + ' km²</div>' +
-           '<div class="lab">of ' + (+r.circle_area_km2).toFixed(2) + ' km² circle (' + Math.round(+r.walk_share_of_circle_pct) + '%)</div></div>' +
-           '<div><div class="lab">Streets and paths within 800 m walk</div><div class="big">' + (+r.street_km_walkable_800m).toFixed(1) + ' km</div>' +
-           '<div class="lab">of ' + (+r.street_km_in_circle).toFixed(1) + ' km inside the circle</div></div></div>';
-      var lost = (+r.street_km_detour_only || 0) + (+r.street_km_disconnected || 0);
-      if (lost > 0) h += '<p class="small">' + (+r.street_km_detour_only).toFixed(1) + ' km of streets in the circle need a longer detour' +
-        ((+r.street_km_disconnected) > 0.05 ? ', and ' + (+r.street_km_disconnected).toFixed(1) + ' km are not connected' : '') +
-        '. Street length is the walkable road and path network (OpenStreetMap), not surveyed footpaths.</p>';
-    }
-    h += '<h3>Land use within the walk (2017)</h3><p>' + (r.landuse_top3 ? esc(r.landuse_top3) : 'Not available') + '</p>';
+    h += '<h3>Land use around the station (2017)</h3><p>' + (r.landuse_top3 ? esc(r.landuse_top3) : 'Not available') + '</p>';
     if (s.lat != null) h += '<div class="actions"><button class="btn primary" id="cZoom">Zoom to station</button></div>';
     $('cardBody').innerHTML = h; $('card').hidden = false; $('card').scrollTop = 0;
     if (s.lat != null) $('cZoom').onclick = function () {
