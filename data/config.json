@@ -1,60 +1,83 @@
 {
-  "title": "Bengaluru Metro Station Viewer",
-  "subtitle": "Station types, 800 m walking catchments and land use",
-  "center": [77.5946, 12.9716],
-  "zoom": 11,
-  "extent": [77.25, 12.72, 77.95, 13.25],
-
-  "data": {
-    "stations": "data/stations.csv",
-    "lines": "data/metro_lines.geojson",
-    "corporations": "data/corporations.geojson",
-    "walkCatchments": "data/walk_catchments_800m.geojson",
-    "circles": "data/circles_800m.geojson",
-    "landuse": "data/landuse_2017.geojson"
+ "title": "Bengaluru Metro Station Viewer",
+ "subtitle": "Footpath survey: 500 m walk areas, main roads and survey stations",
+ "center": [
+  77.5946,
+  12.9716
+ ],
+ "zoom": 11,
+ "extent": [
+  77.25,
+  12.72,
+  77.95,
+  13.25
+ ],
+ "data": {
+  "stations": "data/stations.csv",
+  "lines": "data/metro_lines.geojson",
+  "corporations": "data/corporations.geojson",
+  "walkCatchments": "data/walk_catchments_800m.geojson",
+  "circles": "data/circles_800m.geojson",
+  "landuse": "data/landuse_2017.geojson",
+  "walk500": "data/walk_catchments_500m.geojson",
+  "mainRoads": "data/main_roads_500m.geojson",
+  "extensions": "data/extensions.geojson",
+  "extTargets": "data/extension_targets.geojson",
+  "entrances": "data/entrances.geojson",
+  "rings": "data/area_rings.geojson",
+  "tenderSure": "data/tender_sure_roads.geojson"
+ },
+ "lines": {
+  "Purple": "#8C2877",
+  "Green": "#009933",
+  "Yellow": "#FFDF00",
+  "Pink": "#E72463"
+ },
+ "corporations": {
+  "Central": "#FEDA0A",
+  "East": "#2ACAD9",
+  "North": "#49B171",
+  "South": "#F0858C",
+  "West": "#F6A424"
+ },
+ "landuse": {
+  "field": "group",
+  "colours": {
+   "Residential": "#F6E27F",
+   "Commercial": "#E45756",
+   "Industrial": "#B279A2",
+   "Educational": "#4C78A8",
+   "Religious": "#9C755F",
+   "Parks and recreation": "#54A24B",
+   "Vegetated open land": "#A7C957",
+   "Agriculture, forest and scrub": "#C8D5B9",
+   "Vacant land and layouts": "#E8E3D3",
+   "Water bodies": "#72B7E1",
+   "Railway and metro": "#7F7F7F",
+   "Transport terminals": "#BAB0AC",
+   "Utilities": "#D4A6C8",
+   "Other": "#D9D9D9"
+  }
+ },
+ "planImages": [
+  {
+   "id": "rmp2015",
+   "label": "Revised Master Plan 2015",
+   "type": "xyz",
+   "url": "https://mapwarper.net/layers/tile/2147/{z}/{x}/{y}.png",
+   "note": "Scanned plan georeferenced by volunteers on MapWarper; alignment can be off by tens of metres."
   },
-
-  "categories": [
-    { "id": "residential",   "label": "Residential neighbourhood",            "colour": "#F4A261" },
-    { "id": "mixed",         "label": "Mixed-use neighbourhood",              "colour": "#2A9D8F" },
-    { "id": "office",        "label": "Office and IT employment centre",      "colour": "#264653" },
-    { "id": "commercial",    "label": "Commercial and retail centre",         "colour": "#E63946" },
-    { "id": "institutional", "label": "Institutional and educational cluster","colour": "#8D6E63" },
-    { "id": "industrial",    "label": "Industrial employment area",           "colour": "#6C757D" },
-    { "id": "leisure",       "label": "Leisure and recreational destination", "colour": "#4CC9F0" },
-    { "id": "unclassified",  "label": "Not classified",                        "colour": "#FFFFFF" }
-  ],
-
-  "lines": { "Purple": "#8C2877", "Green": "#009933", "Yellow": "#FFDF00", "Pink": "#E72463" },
-
-  "corporations": { "Central": "#FEDA0A", "East": "#2ACAD9", "North": "#49B171", "South": "#F0858C", "West": "#F6A424" },
-
-  "landuse": {
-    "field": "group",
-    "colours": {
-      "Residential": "#F6E27F",
-      "Commercial": "#E45756",
-      "Industrial": "#B279A2",
-      "Educational": "#4C78A8",
-      "Religious": "#9C755F",
-      "Parks and recreation": "#54A24B",
-      "Vegetated open land": "#A7C957",
-      "Agriculture, forest and scrub": "#C8D5B9",
-      "Vacant land and layouts": "#E8E3D3",
-      "Water bodies": "#72B7E1",
-      "Railway and metro": "#7F7F7F",
-      "Transport terminals": "#BAB0AC",
-      "Utilities": "#D4A6C8",
-      "Other": "#D9D9D9"
-    }
-  },
-
-  "planImages": [
-    { "id": "rmp2015", "label": "Revised Master Plan 2015", "type": "xyz",
-      "url": "https://mapwarper.net/layers/tile/2147/{z}/{x}/{y}.png",
-      "note": "Scanned plan georeferenced by volunteers on MapWarper; alignment can be off by tens of metres." },
-    { "id": "rmp2031", "label": "Draft Master Plan 2031", "type": "cog",
-      "url": "https://pub-5d7a831c335c4d83b8b0f8ebe750e175.r2.dev/City-Tiles/Bengaluru_2031.tif",
-      "note": "Hosted by the Master Plan Viewer project (github.com/datsvarun/master-plan-viewer); host our own copy or get permission before wider use." }
-  ]
+  {
+   "id": "rmp2031",
+   "label": "Draft Master Plan 2031",
+   "type": "cog",
+   "url": "https://pub-5d7a831c335c4d83b8b0f8ebe750e175.r2.dev/City-Tiles/Bengaluru_2031.tif",
+   "note": "Hosted by the Master Plan Viewer project (github.com/datsvarun/master-plan-viewer); host our own copy or get permission before wider use."
+  }
+ ],
+ "roadTypes": {
+  "Arterial": "#9A1B44",
+  "Sub-arterial": "#E72463",
+  "Collector": "#FEDA0A"
+ }
 }

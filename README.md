@@ -1,10 +1,6 @@
-# Bengaluru Metro Station Viewer (version 2)
+# Bengaluru Metro Station Viewer (version 4)
 
-An interactive map of Namma Metro stations, built for the footpath assessment. It shows:
-
-- what kind of place each station serves (its primary type, from ridership and land use);
-- how much of the area around each station people can actually reach within an 800 m walk;
-- the land use, footfall and street length behind each station.
+An interactive map of Namma Metro stations, built for the footpath assessment. It shows the 7 footpath survey stations, the 500 m walk area of every station, the main roads to be surveyed in each, and the extension roads beyond 500 m.
 
 Prepared by Janaagraha, November 2026.
 
@@ -19,52 +15,23 @@ Prepared by Janaagraha, November 2026.
 
 ## Layers
 
-All layers are in one panel:
-
-| Layer | Source |
+| Layer | File |
 | --- | --- |
-| Metro stations, coloured by primary type; legend entries switch types on and off | `data/stations.csv` |
-| Metro corridors; legend entries switch lines on and off | `data/metro_lines.geojson` |
-| 800 m walking catchments | `data/walk_catchments_800m.geojson` (ArcGIS Pro Service Area, unchanged) |
-| 800 m circles, for comparison | `data/circles_800m.geojson` (ArcGIS Pro, unchanged) |
+| Metro stations; survey stations ringed | `data/stations.csv` |
+| Metro corridors | `data/metro_lines.geojson` |
+| 500 m walk areas (ArcGIS Pro Service Area, split between neighbouring stations) | `data/walk_catchments_500m.geojson` |
+| Main roads within 500 m, by type | `data/main_roads_500m.geojson` |
+| Extension roads and the places they lead to | `data/extensions.geojson`, `data/extension_targets.geojson` |
+| Station entrances | `data/entrances.geojson` |
+| 5 km and 12 km from Majestic | `data/area_rings.geojson` |
+| Completed Tender S.U.R.E. roads | `data/tender_sure_roads.geojson` |
+| 800 m walk areas and circles, for comparison | `data/walk_catchments_800m.geojson`, `data/circles_800m.geojson` |
 | Land use 2017 (KSRSAC), loaded only when switched on | `data/landuse_2017.geojson` |
-| GBA corporation boundaries | `data/corporations.geojson` |
-| Master plan 2015 or draft 2031, with one opacity slider | links in `data/config.json` |
+| Corporation boundaries | `data/corporations.geojson` |
+| Master plan 2015 or draft 2031 | links in `data/config.json` |
 
-Clicking a station shows:
+Clicking a station shows ridership, why it was picked (survey stations), footpath and road length within 500 m, extensions, and the 800 m figures for comparison.
 
-- its type and tags;
-- weekday and weekend-day ridership;
-- walking area and street length within 800 m;
-- its top three land uses;
-- any data flag.
+## Updating the data
 
-## Updating the data (no code changes)
-
-Every file in `data/` can be replaced on its own. Keep the column and field names.
-
-- **`stations.csv`:** one row per station.
-  - `primary_category` must be one of: `residential`, `mixed`, `office`, `commercial`, `institutional`, `industrial`, `leisure`, `unclassified`. Labels and colours are set in `config.json`.
-  - `provisional` = `yes` draws a hollow marker.
-  - Ridership columns are daily averages of entries plus exits.
-  - `walk_area_km2`, `street_km_walkable_800m` and `street_km_in_circle` come from the ArcGIS `catchment_summary.csv`.
-- **Catchments and circles:** export new GeoJSON from ArcGIS in WGS84, with a `station_id` field matching `stations.csv`.
-- **`landuse_2017.geojson`:** polygons with a `group` field; colours are set in `config.json` under `landuse`.
-- **New ridership month:** update the ridership columns in `stations.csv`. Recheck the types of stations near the cut-off values.
-- **Opening from a folder after changing data:** run `python tools/make_fallback.py`.
-
-## What changed from version 1
-
-- The panel has only Layers. The Filters and Data tabs and the extra opacity sliders are gone.
-- Station types are reworked from ridership plus land use. Interchange is now a tag, and distance from the centre is no longer used.
-- The 800 m walking catchments from ArcGIS are added. The circles are kept for comparison, and the 400 m ring is gone.
-- The KSRSAC 2017 land-use layer is added.
-- The draft 2031 master plan now displays: `lib/geotiff.js` is now version 3.1.0-beta.0, which the bundled OpenLayers 10.11 needs.
-- The station panel is simpler, with ridership, walking area, street length and land use.
-
-## Cautions
-
-- **Land use:** KSRSAC 2017 covers only the former BBMP area. Eight stations outside it have provisional types based on OpenStreetMap sites, and two more (Manjunathanagara, Beratena Agrahara) are only partly covered.
-- **Ridership:** the Yellow Line figures come from its first weeks of service, and the Pink Line has no data yet.
-- **Street length:** this is the walkable road and path network in OpenStreetMap, not surveyed footpaths.
-- **2031 plan:** the image is hosted by the Master Plan Viewer project. Host our own copy or get their permission, then change its link in `data/config.json`.
+The 500 m files come from the ArcGIS Pro run (`C:\MetroWalk\outputs\web`). To update, replace the files in `data/` with the same names. `data/fallback-data.js` is only for opening the page by double-clicking; rebuild it with `python tools/make_fallback.py`.

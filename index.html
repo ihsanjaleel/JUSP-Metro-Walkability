@@ -6,8 +6,8 @@
 <title>Bengaluru Metro Station Viewer</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Raleway:wght@600;700&display=swap" rel="stylesheet">
-<link rel="stylesheet" href="lib/ol.css">
-<link rel="stylesheet" href="css/style.css">
+<link rel="stylesheet" href="lib/ol.css?v=4.0">
+<link rel="stylesheet" href="css/style.css?v=4.0">
 </head>
 <body>
 <div id="map" aria-label="Map of Bengaluru metro stations"></div>
@@ -40,7 +40,7 @@
     <div class="layer">
       <label class="layer-row"><input type="checkbox" id="lyrStations" checked><span class="layer-name">Metro stations</span></label>
       <div class="legend clickable" id="catLegend"></div>
-      <div class="hint">Click a type to hide or show it. Fill = station type; ring = metro line; size = weekday ridership. Hollow marker = provisional type (land-use data incomplete).</div>
+      <div class="hint">Colour = metro line (two rings = interchange); size = weekday ridership. Click a line under Metro corridors to hide or show it.</div>
     </div>
 
     <div class="layer">
@@ -49,13 +49,43 @@
     </div>
 
     <div class="layer">
-      <label class="layer-row"><input type="checkbox" id="lyrWalk" checked><span class="layer-name">800 m walking catchments</span><span class="sw poly" style="background:rgba(42,202,217,0.35);border-color:#13808C;margin-left:auto"></span></label>
-      <div class="hint">Area within an 800 m walk of the station entrances along the street network.</div>
+      <label class="layer-row"><input type="checkbox" id="lyrWalk500" checked><span class="layer-name">500 m walk areas (survey area)</span><span class="sw poly" style="background:rgba(231,36,99,0.12);border-color:#E72463;margin-left:auto"></span></label>
+      <div class="hint">Area within a 500 m walk of the station entrances. Where two stations are close, each part goes to the nearer one.</div>
+    </div>
+
+    <div class="layer">
+      <label class="layer-row"><input type="checkbox" id="lyrRoads" checked><span class="layer-name">Main roads within 500 m</span></label>
+      <div class="legend" id="roadLegend"></div>
+      <div class="hint">The roads whose footpaths are surveyed and costed. Local streets are not included.</div>
+    </div>
+
+    <div class="layer">
+      <label class="layer-row"><input type="checkbox" id="lyrExt" checked><span class="layer-name">Extension roads</span><span style="display:inline-block;width:22px;border-top:3px dashed #0E0F0F;margin-left:auto"></span></label>
+      <div class="hint">Roads just beyond 500 m that lead to a busy bus stop or a large office, mall, hospital or college (square). Surveyed too.</div>
+    </div>
+
+    <div class="layer">
+      <label class="layer-row"><input type="checkbox" id="lyrEntr"><span class="layer-name">Station entrances</span><span class="sw" style="background:#0E0F0F;border-radius:0;width:9px;height:9px;margin-left:auto"></span></label>
+    </div>
+
+    <div class="layer">
+      <label class="layer-row"><input type="checkbox" id="lyrRings"><span class="layer-name">5 km and 12 km from Majestic</span><span class="sw" style="background:#fff;border-style:dashed;margin-left:auto"></span></label>
+      <div class="hint">Central (within 5 km), inner (5–12 km) and outer (beyond 12 km) areas used to pick survey stations.</div>
+    </div>
+
+    <div class="layer">
+      <label class="layer-row"><input type="checkbox" id="lyrTS"><span class="layer-name">Completed Tender S.U.R.E. roads</span><span class="sw line" style="background:#5C5C5C;margin-left:auto"></span></label>
+      <div class="hint">Central roads already rebuilt; left out of the costing.</div>
+    </div>
+
+    <div class="layer">
+      <label class="layer-row"><input type="checkbox" id="lyrWalk"><span class="layer-name">800 m walking catchments</span><span class="sw poly" style="background:rgba(42,202,217,0.35);border-color:#13808C;margin-left:auto"></span></label>
+      <div class="hint">Area within an 800 m walk, for comparison.</div>
     </div>
 
     <div class="layer">
       <label class="layer-row"><input type="checkbox" id="lyrCircles"><span class="layer-name">800 m circles</span><span class="sw" style="background:#fff;border-style:dashed;margin-left:auto"></span></label>
-      <div class="hint">Straight-line distance, for comparison with the walking catchment.</div>
+      <div class="hint">Straight-line distance, for comparison.</div>
     </div>
 
     <div class="layer">
@@ -65,7 +95,7 @@
     </div>
 
     <div class="layer">
-      <label class="layer-row"><input type="checkbox" id="lyrCorps" checked><span class="layer-name">GBA corporation boundaries</span></label>
+      <label class="layer-row"><input type="checkbox" id="lyrCorps"><span class="layer-name">GBA corporation boundaries</span></label>
       <div class="legend" id="corpLegend"></div>
     </div>
 
@@ -89,16 +119,19 @@
   <div class="modal-box" role="dialog" aria-modal="true" aria-labelledby="aboutTitle">
     <button class="icon-btn card-close" id="aboutClose" aria-label="Close">&#10005;</button>
     <h2 id="aboutTitle"><span>About this viewer</span></h2>
-    <p>A working map for choosing Namma Metro stations for footpath surveys. It shows what kind of place each station serves and how much of its surroundings people can actually reach on foot. It is not an official map.</p>
-    <h3>Station types</h3>
-    <p>Each station has one primary type, based on two sources of evidence: ridership (who uses the station, and when) and land use within its 800 m walking catchment. Interchanges and other features are listed as tags. Types marked provisional rest on OpenStreetMap sites, because the 2017 land-use map does not cover the station.</p>
+    <p>A working map for the metro station footpath survey. It shows ridership, how much of each station's surroundings people can reach on foot, and the main roads to be surveyed. It is not an official map.</p>
+    <h3>Footpath survey</h3>
+    <p>Seven stations are surveyed: Benniganahalli (pilot), Indiranagar, Yeshwantpur, Jayadeva Hospital, Pattandur Agrahara, Infosys Foundation Konappana Agrahara and Madavara. Central stations (within 5 km of Majestic) are skipped because Tender S.U.R.E. works are done there. In the inner (5–12 km) and outer (beyond 12 km) areas, the busiest station on each line was picked, plus Indiranagar for its sub-arterial roads. Each station card says why it was picked.</p>
+    <p>The survey covers the footpaths on arterial, sub-arterial and collector roads within a 500 m walk of the entrances, plus extension roads. An extension is added where, 500–800 m away, there is a bus stop with at least 100 weekday departures on routes that do not stop within 500 m, or a large site (2 ha or more) with no gate within 500 m.</p>
     <h3>Sources</h3>
     <ul>
-      <li><b>Ridership:</b> BMRCL hourly station data released under RTI (OpenCity), September 2025. Figures are average daily entries plus exits, on weekdays (21 days, excluding the 5 September holiday) and weekend days (8 days). The Yellow Line had been open only a few weeks. The Pink Line (opened 13 November 2026) has no data yet.</li>
-      <li><b>Walking catchments:</b> ArcGIS Pro Service Area analysis, 800 m along OpenStreetMap streets and paths (Geofabrik, March 2026), from station entrances (BMRCL GTFS, unofficial). Motorways, flyovers and vehicle underpasses are excluded.</li>
-      <li><b>Land use:</b> KSRSAC urban land use 2017 (via OpenCity), within the former BBMP area. It has no mixed-use class, so mixed use is inferred.</li>
-      <li><b>Supporting evidence:</b> OpenStreetMap office and tech parks, hospitals, colleges and shops.</li>
-      <li><b>Lines and stations:</b> BMRCL GTFS (Vonter/bmrcl-gtfs, OpenStreetMap-based, ODbL). The Pink Line is drawn schematically. S.G. Palya is not mapped.</li>
+      <li><b>Ridership:</b> BMRCL hourly station data released under RTI (OpenCity), September 2025. Figures are average daily entries plus exits, on weekdays (21 days, excluding the 5 September holiday) and weekend days (8 days). The Yellow Line had been open only a few weeks. The Pink Line elevated section (opened 14 November 2026) has no data yet.</li>
+      <li><b>Walk areas:</b> ArcGIS Pro Service Area analysis, 500 m (and 800 m for comparison) along OpenStreetMap streets and paths (Geofabrik, March 2026), from station entrances (BMRCL GTFS, unofficial). Motorways, flyovers and vehicle underpasses are excluded. Pink Line catchments were recomputed the same way from corrected station points.</li>
+      <li><b>Road types:</b> OpenStreetMap road class: trunk and primary = arterial, secondary = sub-arterial, tertiary = collector. Footpath length counts both sides; a divided road drawn as two one-way lines counts one side per line.</li>
+      <li><b>Bus stops:</b> BMTC timetable (Vonter/bmtc-gtfs, unofficial, November 2026). <b>Large sites:</b> OpenStreetMap.</li>
+      <li><b>Tender S.U.R.E. roads:</b> Jana Urban Space portfolio; matched to OpenStreetMap by name. Cantonment Road and Planetarium Road could not be matched.</li>
+      <li><b>Land use:</b> KSRSAC urban land use 2017 (via OpenCity), within the former BBMP area. It is shown for background only.</li>
+      <li><b>Lines and stations:</b> BMRCL GTFS (Vonter/bmrcl-gtfs, OpenStreetMap-based, ODbL). Pink Line alignment and station points from OpenStreetMap (March 2026), with the station names adopted in November 2026.</li>
       <li><b>Corporations:</b> GBA five-corporation map, September 2025.</li>
       <li><b>Master plans:</b> RMP 2015 via MapWarper; draft 2031 hosted by the Master Plan Viewer project.</li>
       <li><b>Base maps:</b> &copy; OpenStreetMap contributors; imagery &copy; Esri.</li>
@@ -109,8 +142,8 @@
 
 <div id="coords" class="coords">Move the pointer over the map</div>
 
-<script src="lib/geotiff.js"></script>
-<script src="lib/ol.js"></script>
-<script src="js/app.js"></script>
+<script src="lib/geotiff.js?v=4.0"></script>
+<script src="lib/ol.js?v=4.0"></script>
+<script src="js/app.js?v=4.0"></script>
 </body>
 </html>
