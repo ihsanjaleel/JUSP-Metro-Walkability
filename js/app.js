@@ -184,10 +184,11 @@
   var roadCache = {};
   function roadStyle(f, res) {
     if (!stOk(f)) return null;
-    var t = f.get('road_type'), k = t + (res > 30 ? 's' : 'l'); if (roadCache[k]) return roadCache[k];
-    var col = (CFG.roadTypes || {})[t] || '#999', w = t === 'Arterial' ? 4 : 3; if (res > 30) w -= 1.5;
+    var t = f.get('road_type'), sch = !!f.get('scheme'), k = t + (res > 30 ? 's' : 'l') + (sch ? 'c' : ''); if (roadCache[k]) return roadCache[k];
+    var col = (CFG.roadTypes || {})[t] || '#999', w = t === 'Arterial' ? 4 : (t === 'Service road' ? 2 : 3); if (res > 30) w = Math.max(1.2, w - 1.5);
     roadCache[k] = [new ol.style.Style({ stroke: new ol.style.Stroke({ color: 'rgba(14,15,15,0.55)', width: w + 2 }) }),
                     new ol.style.Style({ stroke: new ol.style.Stroke({ color: col, width: w }) })];
+    if (sch) roadCache[k].push(new ol.style.Style({ stroke: new ol.style.Stroke({ color: '#fff', width: Math.max(1.2, w - 2), lineDash: [4, 6] }) }));
     return roadCache[k];
   }
   var extSt = new ol.style.Style({ stroke: new ol.style.Stroke({ color: '#0E0F0F', width: 3, lineDash: [7, 5] }) });
@@ -213,7 +214,8 @@
     if (l === L.ts) return f.get('name') + ' – Tender S.U.R.E. (completed)';
     if (l === L.targets) return f.get('name') + ' – ' + (f.get('why') || f.get('kind'));
     if (l === L.ext) return 'Extension to ' + f.get('place') + ' (' + String(f.get('road_type')).toLowerCase() + ', ' + Math.round(f.get('length_m')) + ' m)';
-    var n = f.get('name'); return (n ? n + ' – ' : '') + f.get('road_type') + ' (' + (f.get('sides') === 1 ? 'one side of a divided road' : 'both sides') + ')';
+    var n = f.get('name'), t = f.get('road_type');
+    return (n ? n + ' – ' : '') + t + (t === 'Service road' ? ' (outer side)' : ' (' + (f.get('sides') === 1 ? 'one side of a divided road' : 'both sides') + ')') + (f.get('scheme') ? '. ' + f.get('scheme') : '');
   }
   function haloStyle(f) {
     if (f.getGeometry().getType() === 'Point') return new ol.style.Style({ image: new ol.style.Circle({ radius: selected ? radius(selected) + 9 : 12,
@@ -255,8 +257,8 @@
     }).join('');
     var nr = {}; L.roads.getSource().getFeatures().forEach(function (f) { var t = f.get('road_type'); nr[t] = (nr[t] || 0) + (+f.get('length_m') || 0); });
     $('roadLegend').innerHTML = Object.keys(CFG.roadTypes || {}).map(function (k) {
-      return '<span class="sw line" style="background:' + CFG.roadTypes[k] + ';box-shadow:0 0 0 1px rgba(14,15,15,0.55)"></span><span>' + k + '</span><span class="n">' + ((nr[k] || 0) / 1000).toFixed(0) + ' km</span>';
-    }).join('');
+      return '<span class="sw line" style="background:' + CFG.roadTypes[k] + ';box-shadow:0 0 0 1px rgba(14,15,15,0.55)"></span><span>' + (k === 'Service road' ? 'Service road alongside' : k) + '</span><span class="n">' + ((nr[k] || 0) / 1000).toFixed(0) + ' km</span>';
+    }).join('') + '<span class="sw line" style="background:repeating-linear-gradient(90deg,#9A1B44 0 4px,#fff 4px 8px)"></span><span>Rebuilt or funded by another scheme</span><span></span>';
     $('corpLegend').innerHTML = Object.keys(CFG.corporations).map(function (k) {
       return '<span class="sw poly" style="background:' + hexA(CFG.corporations[k], 0.5) + '"></span><span>Bengaluru ' + k + '</span><span></span>';
     }).join('');
@@ -301,14 +303,18 @@
     } else h += '<p class="small">No ridership data yet.</p>';
     if (r.footpath_km_500m !== '' && r.footpath_km_500m != null) {
       h += '<h3>Main roads within a 500 m walk</h3>';
-      h += '<div class="grid2"><div><div class="lab">Footpath length (both sides)</div><div class="big">' + (+r.footpath_km_500m).toFixed(1) + ' km</div>' +
+      h += '<div class="grid2"><div><div class="lab">Footpath to survey</div><div class="big">' + (+r.footpath_km_500m).toFixed(1) + ' km</div>' +
            (r.area_500m_km2 ? '<div class="lab">Walk area ' + (+r.area_500m_km2).toFixed(2) + ' km²</div>' : '') + '</div>' +
-           '<div><div class="lab">Road length by type</div><div>Arterial ' + (+r.arterial_km_500m).toFixed(1) + ' km<br>Sub-arterial ' + (+r.sub_arterial_km_500m).toFixed(1) + ' km<br>Collector ' + (+r.collector_km_500m).toFixed(1) + ' km</div></div></div>';
+           '<div><div class="lab">Road length by type</div><div>Arterial ' + (+r.arterial_km_500m).toFixed(1) + ' km<br>Sub-arterial ' + (+r.sub_arterial_km_500m).toFixed(1) + ' km<br>Collector ' + (+r.collector_km_500m).toFixed(1) + ' km<br>Service road alongside ' + (+r.service_km_500m || 0).toFixed(1) + ' km</div></div></div>';
+      if (+r.scheme_footpath_km > 0) {
+        var sc = {}; L.roads.getSource().getFeatures().forEach(function (f) { if (f.get('station_id') === s.id && f.get('scheme')) sc[f.get('name')] = f.get('scheme'); });
+        h += '<p class="small"><b>Covered by other schemes</b> (' + (+r.scheme_footpath_km).toFixed(1) + ' km of footpath): ' + Object.keys(sc).map(function (n) { return esc(n) + ' – ' + esc(sc[n].toLowerCase()); }).join('; ') + '.</p>';
+      }
       var ex = L.ext.getSource().getFeatures().filter(function (f) { return f.get('station_id') === s.id; }), places = {};
       ex.forEach(function (f) { var p = f.get('place'); places[p] = (places[p] || 0) + (+f.get('length_m') || 0); });
       if (ex.length) h += '<p class="small"><b>Extensions</b> (+' + (+r.extension_footpath_km).toFixed(1) + ' km of footpath): ' +
         Object.keys(places).map(function (p) { return esc(p) + ' (' + Math.round(places[p]) + ' m)'; }).join(', ') + '.</p>';
-      h += '<p class="small">ArcGIS Pro, 500 m walk from the entrances. Arterial, sub-arterial and collector roads from OpenStreetMap; local streets not included.</p>';
+      h += '<p class="small">ArcGIS Pro, 500 m walk from the entrances. Arterial, sub-arterial and collector roads from OpenStreetMap; flyovers, underpasses and local streets not included.</p>';
     }
     h += '<h3>Land use around the station (2017)</h3><p>' + (r.landuse_top3 ? esc(r.landuse_top3) : 'Not available') + '</p>';
     if (s.lat != null) h += '<div class="actions"><button class="btn primary" id="cZoom">Zoom to station</button></div>';

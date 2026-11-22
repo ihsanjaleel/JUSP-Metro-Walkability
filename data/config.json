@@ -77,6 +77,7 @@
  "roadTypes": {
   "Arterial": "#9A1B44",
   "Sub-arterial": "#E72463",
-  "Collector": "#FEDA0A"
+  "Collector": "#FEDA0A",
+  "Service road": "#8C8C8C"
  }
 }
